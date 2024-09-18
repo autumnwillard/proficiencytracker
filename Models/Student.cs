@@ -1,4 +1,3 @@
-
 using System.ComponentModel.DataAnnotations;
 
 namespace ProficiencyTracker.Models 
@@ -18,6 +17,7 @@ namespace ProficiencyTracker.Models
         public string? Notes { get; set; }
         public int UserId { get; set; }
         public User User { get; set; } = null!;
+        public List<StudentProgress> Progress { get; set; } = new List<StudentProgress>();
 
     }
 }
