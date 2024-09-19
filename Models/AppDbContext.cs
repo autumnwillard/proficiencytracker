@@ -19,6 +19,11 @@ namespace ProficiencyTracker.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Student>()
+                .HasOne(s => s.User)
+                .WithMany(u => u.Students)
+                .HasForeignKey(s => s.UserId);
         }
     }
 }

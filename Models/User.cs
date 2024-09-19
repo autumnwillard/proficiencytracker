@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ProficiencyTracker.Models
 {
@@ -10,8 +11,7 @@ namespace ProficiencyTracker.Models
         {
             Students = new List<Student>();
         }
-        
-        [Required]
-        public List<Student> Students { get; set; }
+
+        public virtual ICollection<Student> Students { get; set; }
     }
 }
