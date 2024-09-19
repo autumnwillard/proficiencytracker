@@ -6,7 +6,7 @@ namespace ProficiencyTracker.Models
     {
         public int Id { get; set; }
         [Required]
-        public string Description { get; set; }
+        public required string Description { get; set; }
         public int GradeLevelId { get; set; }
         public GradeLevel GradeLevel { get; set; } = null!;
     }
