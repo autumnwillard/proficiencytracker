@@ -6,6 +6,11 @@ namespace ProficiencyTracker.Models
 {
     public class User : IdentityUser
     {
+        public User()
+        {
+            Students = new List<Student>();
+        }
+        
         [Required]
         public List<Student> Students { get; set; }
     }
