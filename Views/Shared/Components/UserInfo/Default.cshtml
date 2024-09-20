@@ -1,0 +1,10 @@
+@model UserInfoViewModel
+
+@if (Model.IsAuthenticated)
+{
+    <span class="nav-link text-dark">Welcome, @Model.Username!</span>
+}
+else
+{
+    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+}
