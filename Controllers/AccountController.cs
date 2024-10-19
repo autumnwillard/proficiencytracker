@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using ProficiencyTracker.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal;
 
 namespace ProficiencyTracker.Controllers
 {
@@ -138,13 +139,75 @@ namespace ProficiencyTracker.Controllers
         }
 
         [HttpGet]
-        public ActionResult ForgotPassword() {
+        public IActionResult ForgotPassword()
+        {
             return View();
         }
 
         [HttpPost]
-        public ActionResult ForgotPassword(string email) {
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+            {
+                // Don't reveal that the user does not exist or is not confirmed
+                return View("ForgotPasswordConfirmation");
+            }
+
+            // Generate the reset password token
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            // Generate reset password link
+            var callbackUrl = Url.Action("ResetPassword", "Account",
+                new { userId = user.Id, token = token }, protocol: HttpContext.Request.Scheme);
+
+            // In a real application, you'd send an email here
+            // For local testing, we'll just display the reset link
+            ViewBag.ResetLink = callbackUrl;
+
+            return View("ForgotPasswordConfirmation");
+        }
+        [HttpGet]
+        public IActionResult ResetPassword(string token, string userId)
+        {
+            var model = new ResetPasswordViewModel { Token = token, UserId = userId };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.FindByIdAsync(model.UserId);
+            if (user == null)
+            {
+                // Don't reveal that the user does not exist
+                return RedirectToAction("ResetPasswordConfirmation", "Account");
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("ResetPasswordConfirmation", "Account");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
             return View();
         }
+
+        [HttpGet]
+        public IActionResult ResetPasswordConfirmation()
+        {
+            return View();
+        }
+
     }
+
 }
