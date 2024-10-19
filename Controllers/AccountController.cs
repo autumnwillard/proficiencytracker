@@ -136,5 +136,15 @@ namespace ProficiencyTracker.Controllers
             }
             return View(users);
         }
+
+        [HttpGet]
+        public ActionResult ForgotPassword() {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult ForgotPassword(string email) {
+            return View();
+        }
     }
 }
